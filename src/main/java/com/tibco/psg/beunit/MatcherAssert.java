@@ -8,7 +8,7 @@ import org.hamcrest.Matcher;
 
 @com.tibco.be.model.functions.BEPackage(
 	catalog = "BEUnit", 
-	category = "h", 
+	category = "Matchers", 
 	synopsis = "BEUnit functions for Hamcrest assertions.")
 public class MatcherAssert {
 
@@ -30,7 +30,16 @@ public class MatcherAssert {
 				.assertThat(reason, actual, (Matcher) matcher);
 	}
 
-	@com.tibco.be.model.functions.BEFunction(name = "asList", description = "Convert an array of objects into List", signature = "Object asList(Object... items)", params = { @com.tibco.be.model.functions.FunctionParamDescriptor(name = "items", type = "T...", desc = "array of objects of type T") }, freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "List&lt;T&gt;", desc = "List of testing objects of type (T)."), version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), cautions = "none", fndomain = { ACTION }, example = "asList(Object[]{&quot;abc&quot;, &quot;xyz&quot;})")
+	@com.tibco.be.model.functions.BEFunction(
+		name = "asList", 
+		description = "Convert an array of objects into List", 
+		signature = "Object asList(Object... items)", 
+		params = { 
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "items", type = "T...", desc = "array of objects of type T") 
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "List&lt;T&gt;", desc = "List of testing objects of type (T)."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "asList(&quot;abc&quot;, &quot;xyz&quot;)")
 	public static Object asList(Object... items) {
 		return Arrays.asList(items);
 	}
@@ -197,30 +206,30 @@ public class MatcherAssert {
 	}
 
 	@com.tibco.be.model.functions.BEFunction(
-		name = "startsWith", 
+		name = "startsWithString", 
 		description = "Creates a matcher that matches if the testing string starts with a specified prefix.", 
-		signature = "Object startsWith(String prefix)", 
+		signature = "Object startsWithString(String prefix)", 
 		params = { 
 			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "prefix", type = "String", desc = "prefix to match the beginning of the testing string") 
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;String&gt;", desc = "The matcher to test the prefix in an actual value."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
 		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, startsWith(&quot;my&quot;))")
-	public static Object startsWith(java.lang.String prefix) {
+	public static Object startsWithString(java.lang.String prefix) {
 		return org.hamcrest.CoreMatchers.startsWith(prefix);
 	}
 
 	@com.tibco.be.model.functions.BEFunction(
-		name = "endsWith", 
+		name = "endsWithString", 
 		description = "Creates a matcher that matches if the testing string ends with a specified suffix.", 
-		signature = "Object endsWith(String suffix)", 
+		signature = "Object endsWithString(String suffix)", 
 		params = { 
 			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "suffix", type = "String", desc = "suffix to match the end of the testing string") 
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;String&gt;", desc = "The matcher to test the suffix in an actual value."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
 		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, endsWith(&quot;Note&quot;))")
-	public static Object endsWith(java.lang.String suffix) {
+	public static Object endsWithString(java.lang.String suffix) {
 		return org.hamcrest.CoreMatchers.endsWith(suffix);
 	}
 

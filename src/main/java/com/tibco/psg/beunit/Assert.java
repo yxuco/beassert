@@ -4,7 +4,7 @@ import static com.tibco.be.model.functions.FunctionDomain.ACTION;
 
 @com.tibco.be.model.functions.BEPackage(
 	catalog = "BEUnit", 
-	category = "j", 
+	category = "Assert", 
 	synopsis = "BEUnit functions for JUnit assertion.")
 public class Assert {
 
