@@ -6,11 +6,61 @@ import java.util.Arrays;
 
 import org.hamcrest.Matcher;
 
+import com.tibco.cep.runtime.model.element.Concept;
+import com.tibco.cep.runtime.model.element.Property;
+import com.tibco.cep.runtime.model.event.SimpleEvent;
+
 @com.tibco.be.model.functions.BEPackage(
 	catalog = "BEUnit", 
 	category = "Matchers", 
 	synopsis = "BEUnit functions for Hamcrest assertions.")
 public class MatcherAssert {
+
+	@com.tibco.be.model.functions.BEFunction(
+			name = "inspectEntity", 
+			description = "inpect concept or entity", 
+			signature = "String inspectEntity(Object entity)", 
+			params = {
+				@com.tibco.be.model.functions.FunctionParamDescriptor(name = "entity", type = "Object", desc = "an instance of Concept or Event")
+			}, 
+			freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "String", desc = "inspection result, or null if not an entity"), 
+			version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+			cautions = "none", fndomain = { ACTION }, example = "")
+	public static String inspectEntity(Object entity) {
+		StringBuffer buff = new StringBuffer();
+		if (entity instanceof Concept) {
+			Concept obj = (Concept) entity;
+			buff.append(obj.getType());
+			Property[] props = obj.getProperties();
+			for (Property prop : props) {
+				String name = prop.getName();
+				buff.append(';').append(name).append('=');
+				try {
+					Object p = obj.getPropertyValue(name);
+					buff.append(p.getClass().getName());
+					if (p.getClass().isArray()) {
+						buff.append("[]");
+					}
+				} catch (Exception e) {}
+			}
+			return buff.toString();
+		} else if (entity instanceof SimpleEvent) {
+			SimpleEvent obj = (SimpleEvent) entity;
+			buff.append(obj.getType());
+			String[] propNames = obj.getPropertyNames();
+			for (String name : propNames) {
+				buff.append(';').append(name).append('=');
+				try {
+					Object p = obj.getPropertyValue(name);
+					buff.append(p.getClass().getName());
+				} catch (Exception e) {}
+			}
+			return buff.toString();
+		}
+		else {
+			return entity.getClass().getName();
+		}
+	}
 
 	@com.tibco.be.model.functions.BEFunction(
 		name = "assertThat", 
@@ -233,4 +283,31 @@ public class MatcherAssert {
 		return org.hamcrest.CoreMatchers.endsWith(suffix);
 	}
 
+	@com.tibco.be.model.functions.BEFunction(
+		name = "matchesRegex", 
+		description = "Creates a matcher that matches if the testing string conforms to a specified regex pattern.", 
+		signature = "Object matchesRegex(String regex)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "regex", type = "String", desc = "regex pattern to match the testing string")			
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;String&gt;", desc = "The matcher to match the regex pattern on the actual value."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, matchesRegex(&quot;^my.*&quot;))")
+	public static Object matchesRegex(java.lang.String regex) {
+		return com.tibco.psg.beunit.matcher.StringRegexMatcher.matchesRegex(regex, false);
+	}
+
+	@com.tibco.be.model.functions.BEFunction(
+		name = "instanceOf", 
+		description = "Creates a matcher that matches if the testing object is an instance of a specified type.", 
+		signature = "Object instanceOf(String expectedType)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "expectedType", type = "String", desc = "expected type of the testing object, e.g., int, double, DateTime, or /Concepts/Container")			
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher", desc = "The matcher to match the type of the actual value."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, instanceOf(&quot;String&quot;))")
+	public static Object instanceOf(java.lang.String expectedType) {
+		return com.tibco.psg.beunit.matcher.InstanceOfMatcher.instanceOf(expectedType);
+	}
 }
