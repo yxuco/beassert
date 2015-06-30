@@ -268,19 +268,24 @@ public class MatcherAssert {
 	}
 	
 	@com.tibco.be.model.functions.BEFunction(
-		name = "lengthIs", 
+		name = "hasSize", 
 		description = "Creates a matcher for a list of testing items that matches if exactly the expected number of items are matched by the specified itemMatcher.", 
-		signature = "Object lengthIs(Object itemMatcher, int expectedSize)", 
+		signature = "Object hasSize(Object itemMatcher, Object sizeMatcher)", 
 		params = {
-			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to every item in the testing object list."),			
-			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "expectedSize", type = "int", desc = "expected number of objects that conform to the itemMatcher.")			
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to every item in the testing object list. null to count all."),			
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "sizeMatcher", type = "int or Matcher<Integer>", desc = "expected number of objects that conform to the itemMatcher.")			
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;Iterable&lt;? extends T&gt;&gt;", desc = "The matcher to check the number of matching objects in the testing list."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, asList(&quot;bar&quot;, &quot;baz&quot;), lengthIs(startsWithString(&quot;ba&quot;), 2))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, asList(&quot;bar&quot;, &quot;baz&quot;), hasSize(startsWithString(&quot;ba&quot;), 2))")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Object lengthIs(Object itemMatcher, int expectedSize) {
-		return com.tibco.psg.beunit.matcher.LengthOfMatcher.lengthIs((Matcher) itemMatcher, expectedSize);
+	public static Object hasSize(Object itemMatcher, Object sizeMatcher) {
+		if (sizeMatcher instanceof Matcher) {
+			return com.tibco.psg.beunit.matcher.CollectionSizeMatcher.hasSize((Matcher) itemMatcher, (Matcher) sizeMatcher);
+		} 
+		else {
+			return com.tibco.psg.beunit.matcher.CollectionSizeMatcher.hasSize((Matcher) itemMatcher, org.hamcrest.CoreMatchers.equalTo(sizeMatcher));
+		}
 	}
 
 	@com.tibco.be.model.functions.BEFunction(

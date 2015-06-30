@@ -78,8 +78,8 @@ public class MatchAssertTest {
 	}
 
 	@Test
-	public void testLengthIs() {
-		assertThat("LengthIs", asList("foo", "bar"), lengthIs(notNullValue(), 2));
+	public void testHasSize() {
+		assertThat("HasSize", asList("foo", "bar"), hasSize(notNullValue(), 2));
 	}
 
 }

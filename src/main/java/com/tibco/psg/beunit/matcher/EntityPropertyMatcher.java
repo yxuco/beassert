@@ -2,9 +2,8 @@ package com.tibco.psg.beunit.matcher;
 
 import java.util.ArrayList;
 
-import org.hamcrest.Description;
+import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import com.tibco.cep.kernel.model.entity.Entity;
 import com.tibco.cep.runtime.model.element.Concept;
@@ -13,14 +12,12 @@ import com.tibco.cep.runtime.model.element.PropertyArray;
 import com.tibco.cep.runtime.model.element.PropertyAtom;
 import com.tibco.cep.runtime.model.event.SimpleEvent;
 
-public class EntityPropertyMatcher extends TypeSafeDiagnosingMatcher<Entity> {
-
-	private final Matcher<?> propertyMatcher;
+public class EntityPropertyMatcher extends FeatureMatcher<Entity, Object> {
 	private final String propertyName;
 	
-	public EntityPropertyMatcher(String propertyName, Matcher<?> propertyMatcher) {
+	public EntityPropertyMatcher(String propertyName, Matcher<? super Object> propertyMatcher) {
+		super(propertyMatcher, "property " + propertyName, "property " + propertyName);
 		this.propertyName = propertyName;
-		this.propertyMatcher = propertyMatcher;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -62,22 +59,6 @@ public class EntityPropertyMatcher extends TypeSafeDiagnosingMatcher<Entity> {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public void describeTo(Description description) {
-		description.appendText("the property " + propertyName + " is ")
-			.appendDescriptionOf(propertyMatcher);
-	}
-
-	@Override
-	protected boolean matchesSafely(Entity actual, Description mismatch) {
-		final Object featureValue = featureValueOf(actual);
-		if (!propertyMatcher.matches(featureValue)) {
-			mismatch.appendText("the property " + propertyName + " ");
-			propertyMatcher.describeMismatch(featureValue, mismatch);
-			return false;
-		}
-		return true;
-	}
 	
 	/**
      * Creates a matcher for BE entity that matches when the value of a specified property
@@ -90,7 +71,7 @@ public class EntityPropertyMatcher extends TypeSafeDiagnosingMatcher<Entity> {
 	 * @param propertyMatcher
 	 *     the matcher to apply to the specified property of the examined entity
 	 */
-    public static Matcher<?> withProperty(String propertyName, Matcher<?> propertyMatcher) {
+    public static Matcher<?> withProperty(String propertyName, Matcher<? super Object> propertyMatcher) {
         return new EntityPropertyMatcher(propertyName, propertyMatcher);
     }
 
@@ -103,7 +84,7 @@ public class EntityPropertyMatcher extends TypeSafeDiagnosingMatcher<Entity> {
 	 * @param payloadMatcher
 	 *     the matcher to apply to the payload of the examined event
 	 */
-    public static Matcher<?> withPayload(Matcher<?> payloadMatcher) {
+    public static Matcher<?> withPayload(Matcher<? super Object> payloadMatcher) {
         return new EntityPropertyMatcher("@payload", payloadMatcher);
     }
 }
