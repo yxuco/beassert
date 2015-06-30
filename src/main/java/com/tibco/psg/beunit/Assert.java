@@ -111,7 +111,7 @@ public class Assert {
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
 		cautions = "none", fndomain = { ACTION }, example = "")
 	public static void assertWithinRange(String reason, double expected, double actual, double delta) {
-		assertTrue(reason, Math.abs(expected = actual) <= delta);
+		assertTrue(reason, Math.abs(expected - actual) <= delta);
 	}
 
 	@com.tibco.be.model.functions.BEFunction(

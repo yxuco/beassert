@@ -19,65 +19,6 @@ import com.tibco.cep.runtime.model.event.SimpleEvent;
 public class MatcherAssert {
 
 	@com.tibco.be.model.functions.BEFunction(
-			name = "inspectEntity", 
-			description = "inpect concept or entity", 
-			signature = "String inspectEntity(Object entity)", 
-			params = {
-				@com.tibco.be.model.functions.FunctionParamDescriptor(name = "entity", type = "Object", desc = "an instance of Concept or Event")
-			}, 
-			freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "String", desc = "inspection result, or null if not an entity"), 
-			version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-			cautions = "none", fndomain = { ACTION }, example = "")
-	public static String inspectEntity(Object entity) {
-		StringBuffer buff = new StringBuffer();
-		if (entity instanceof Concept) {
-			Concept obj = (Concept) entity;
-			buff.append(obj.getType());
-			Property[] props = obj.getProperties();
-			for (Property prop : props) {
-				String name = prop.getName();
-				buff.append(';').append(name).append('=');
-				try {
-					if (prop instanceof PropertyArray) {
-						for (PropertyAtom p : ((PropertyArray) prop).toArray()) {
-							Object v = p.getValue();
-							buff.append(v.getClass().getName());
-							buff.append(":").append(v);
-						}
-					}
-					else {
-						Object v = ((PropertyAtom) prop).getValue();
-						buff.append(";").append(v.getClass().getName());
-						buff.append(":").append(v);
-					}
-				} catch (Exception e) {
-					System.out.println("Exception: " + e.getMessage());
-				}
-			}
-			return buff.toString();
-		} else if (entity instanceof SimpleEvent) {
-			SimpleEvent obj = (SimpleEvent) entity;
-			buff.append(obj.getType());
-			String[] propNames = obj.getPropertyNames();
-			for (String name : propNames) {
-				buff.append(';').append(name).append('=');
-				try {
-					Object p = obj.getPropertyValue(name);
-					buff.append(p.getClass().getName());
-					buff.append(":").append(p);
-				} catch (Exception e) {
-					System.out.println("Exception: " + e.getMessage());					
-				}
-			}
-			buff.append("@payload").append(obj.getPayloadAsString());
-			return buff.toString();
-		}
-		else {
-			return entity.getClass().getName();
-		}
-	}
-
-	@com.tibco.be.model.functions.BEFunction(
 		name = "assertThat", 
 		description = "Apply a matcher on actual value, throw AssertionError if it fails to match.", 
 		signature = "void assertThat(String reason, Object actual, Object matcher)", 
@@ -118,7 +59,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;T&gt;", desc = "The match-all matcher for testing objects of type (T).  This matcher will test all the input matchers against the testing object."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myValue&quot;, allOf(startsWith(&quot;my&quot;), containsString(&quot;Val&quot;)))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myValue&quot;, allOf(startsWithString(&quot;my&quot;), containsString(&quot;Val&quot;)))")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object allOf(Object... matchers) {
 		if (matchers.length == 1) {
@@ -141,7 +82,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;T&gt;", desc = "The match-any matcher for testing objects if type (T).  This matcher will test all the input matchers against the testing object until it finds a match."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myValue&quot;, anyOf(startsWith(&quot;foo&quot;), containsString(&quot;Val&quot;)))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myValue&quot;, anyOf(startsWithString(&quot;foo&quot;), containsString(&quot;Val&quot;)))")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object anyOf(Object... matchers) {
 		if (matchers.length == 1) {
@@ -164,7 +105,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;Iterable&lt;? extends T&gt;&gt;", desc = "The matcher to test a list of items."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, Arrays.asList(&quot;bar&quot;, &quot;baz&quot;), everyItem(startsWith(&quot;ba&quot;)))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, Arrays.asList(&quot;bar&quot;, &quot;baz&quot;), everyItem(startsWithString(&quot;ba&quot;)))")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object everyItem(Object itemMatcher) {
 		return org.hamcrest.CoreMatchers.everyItem((Matcher) itemMatcher);
@@ -179,7 +120,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;Iterable&lt;? super T&gt;&gt;", desc = "The matcher to test a list of items."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, Arrays.asList(&quot;foo&quot;, &quot;bar&quot;), hasItem(startsWith(&quot;ba&quot;)))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, Arrays.asList(&quot;foo&quot;, &quot;bar&quot;), hasItem(startsWithString(&quot;ba&quot;)))")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object hasItem(Object itemMatcher) {
 		return org.hamcrest.CoreMatchers.hasItem((Matcher) itemMatcher);
@@ -279,7 +220,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;String&gt;", desc = "The matcher to test the prefix in an actual value."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, startsWith(&quot;my&quot;))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, startsWithString(&quot;my&quot;))")
 	public static Object startsWithString(java.lang.String prefix) {
 		return org.hamcrest.CoreMatchers.startsWith(prefix);
 	}
@@ -293,7 +234,7 @@ public class MatcherAssert {
 		}, 
 		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;String&gt;", desc = "The matcher to test the suffix in an actual value."), 
 		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
-		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, endsWith(&quot;Note&quot;))")
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, endsWithString(&quot;Note&quot;))")
 	public static Object endsWithString(java.lang.String suffix) {
 		return org.hamcrest.CoreMatchers.endsWith(suffix);
 	}
