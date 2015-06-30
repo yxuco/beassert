@@ -8,6 +8,8 @@ import org.hamcrest.Matcher;
 
 import com.tibco.cep.runtime.model.element.Concept;
 import com.tibco.cep.runtime.model.element.Property;
+import com.tibco.cep.runtime.model.element.PropertyArray;
+import com.tibco.cep.runtime.model.element.PropertyAtom;
 import com.tibco.cep.runtime.model.event.SimpleEvent;
 
 @com.tibco.be.model.functions.BEPackage(
@@ -36,12 +38,21 @@ public class MatcherAssert {
 				String name = prop.getName();
 				buff.append(';').append(name).append('=');
 				try {
-					Object p = obj.getPropertyValue(name);
-					buff.append(p.getClass().getName());
-					if (p.getClass().isArray()) {
-						buff.append("[]");
+					if (prop instanceof PropertyArray) {
+						for (PropertyAtom p : ((PropertyArray) prop).toArray()) {
+							Object v = p.getValue();
+							buff.append(v.getClass().getName());
+							buff.append(":").append(v);
+						}
 					}
-				} catch (Exception e) {}
+					else {
+						Object v = ((PropertyAtom) prop).getValue();
+						buff.append(";").append(v.getClass().getName());
+						buff.append(":").append(v);
+					}
+				} catch (Exception e) {
+					System.out.println("Exception: " + e.getMessage());
+				}
 			}
 			return buff.toString();
 		} else if (entity instanceof SimpleEvent) {
@@ -53,8 +64,12 @@ public class MatcherAssert {
 				try {
 					Object p = obj.getPropertyValue(name);
 					buff.append(p.getClass().getName());
-				} catch (Exception e) {}
+					buff.append(":").append(p);
+				} catch (Exception e) {
+					System.out.println("Exception: " + e.getMessage());					
+				}
 			}
+			buff.append("@payload").append(obj.getPayloadAsString());
 			return buff.toString();
 		}
 		else {
@@ -309,5 +324,52 @@ public class MatcherAssert {
 		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, &quot;myStringOfNote&quot;, instanceOf(&quot;String&quot;))")
 	public static Object instanceOf(java.lang.String expectedType) {
 		return com.tibco.psg.beunit.matcher.InstanceOfMatcher.instanceOf(expectedType);
+	}
+	
+	@com.tibco.be.model.functions.BEFunction(
+		name = "lengthIs", 
+		description = "Creates a matcher for a list of testing items that matches if exactly the expected number of items are matched by the specified itemMatcher.", 
+		signature = "Object lengthIs(Object itemMatcher, int expectedSize)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to every item in the testing object list."),			
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "expectedSize", type = "int", desc = "expected number of objects that conform to the itemMatcher.")			
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;Iterable&lt;? extends T&gt;&gt;", desc = "The matcher to check the number of matching objects in the testing list."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, asList(&quot;bar&quot;, &quot;baz&quot;), lengthIs(startsWithString(&quot;ba&quot;), 2))")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Object lengthIs(Object itemMatcher, int expectedSize) {
+		return com.tibco.psg.beunit.matcher.LengthOfMatcher.lengthIs((Matcher) itemMatcher, expectedSize);
+	}
+
+	@com.tibco.be.model.functions.BEFunction(
+		name = "withProperty", 
+		description = "Creates a matcher for a BE entity that matches if a named property is matched by the specified propertyMatcher.", 
+		signature = "Object withProperty(String propertyName, Object propertyMatcher)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "propertyName", type = "String", desc = "name of the property to be matched by propertyMatcher."),
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "propertyMatcher", type = "Matcher", desc = "the matcher to apply to the property of the testing entity.")			
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher", desc = "The matcher for the testing entity containing the specified property."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, aConcept, withProperty(&quot;aStringProp&quot;, startsWithString(&quot;ba&quot;)))")
+	@SuppressWarnings({ "rawtypes" })
+	public static Object withProperty(String propertyName, Object propertyMatcher) {
+		return com.tibco.psg.beunit.matcher.EntityPropertyMatcher.withProperty(propertyName, (Matcher) propertyMatcher);
+	}
+
+	@com.tibco.be.model.functions.BEFunction(
+		name = "withPayload", 
+		description = "Creates a matcher for a BE event that matches if its payload is matched by the specified payloadMatcher.", 
+		signature = "Object withPayload(Object payloadMatcher)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "payloadMatcher", type = "Matcher", desc = "the matcher to apply to the payload of the testing event.")			
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher", desc = "The matcher for the testing event."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, anEvent, withPayload(containsString(&quot;xml&quot;)))")
+	@SuppressWarnings({ "rawtypes" })
+	public static Object withPayload(Object payloadMatcher) {
+		return com.tibco.psg.beunit.matcher.EntityPropertyMatcher.withPayload((Matcher) payloadMatcher);
 	}
 }
