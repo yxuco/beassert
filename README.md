@@ -1,4 +1,4 @@
-This Java utility supports the unit tests of [TIBCO BusinessEvents](https://docs.tibco.com/products/tibco-businessevents-5-2-0) (BE) applications using [JUnit](http://junit.org/).  It implements BE catalog functions for assertion.  It wraps most core assert functions from [JUnit](https://github.com/junit-team/junit) and [Hamcrest](https://github.com/hamcrest/JavaHamcrest), and implements some extensions for BE applications.  This utility is used to demonstrate a BE test framework by the demo project [DataTypeDemo](https://github.com/yxuco/DataTypeDemo).
+This Java utility supports the testing of [TIBCO BusinessEvents](https://docs.tibco.com/products/tibco-businessevents-5-2-0) (BE) applications using [JUnit](http://junit.org/).  It implements BE catalog functions for assertion.  It wraps most core assert functions from [JUnit](https://github.com/junit-team/junit) and [Hamcrest](https://github.com/hamcrest/JavaHamcrest), and implements some extensions for BE applications.  This utility is used to demonstrate a BE test framework by the demo project [DataTypeDemo](https://github.com/yxuco/DataTypeDemo).
 
 ## Dependencies
 This utility is used by the following 2 projects to demonstrate BE testing, so check them out to understand the usage of the assertion functions in this utility.
@@ -8,11 +8,11 @@ This utility is used by the following 2 projects to demonstrate BE testing, so c
  
 #### Maven
 
-This is a Maven project, and so if maven has not been installed on your system, you'll need to install Maven and Git as described in the [beunit](https://github.com/yxuco/beunit) project.
+This is a Maven project, and so if Maven has not been installed on your system, you'll need to install Maven and Git as described in the [beunit](https://github.com/yxuco/beunit) project.
     
 #### Clone this project from GitHub
 
-In the root folder of your workspace, clone the project using the command
+In the root folder of your workspace, clone the project using command
 
     git clone https://github.com/yxuco/beassert.git
 
@@ -27,8 +27,10 @@ It should download the source code to the folder `beassert` in your workspace.
  
 They are not available in Maven Central, so, you need to install them into your local Maven repository using the following command:
 
-    mvn install:install-file -Dfile=$BE_HOME/lib/cep-common.jar -DgroupId=com.tibco.be -DartifactId=cep-common -Dversion=5.2.0 -Dpackaging=jar
-    mvn install:install-file -Dfile=$BE_HOME/lib/cep-kernel.jar -DgroupId=com.tibco.be -DartifactId=cep-kernel -Dversion=5.2.0 -Dpackaging=jar
+    mvn install:install-file -Dfile=$BE_HOME/lib/cep-common.jar -DgroupId=com.tibco.be \
+    -DartifactId=cep-common -Dversion=5.2.0 -Dpackaging=jar
+    mvn install:install-file -Dfile=$BE_HOME/lib/cep-kernel.jar -DgroupId=com.tibco.be \
+    -DartifactId=cep-kernel -Dversion=5.2.0 -Dpackaging=jar
 
 ## Build the utility
 
@@ -37,11 +39,9 @@ In your workspace,
     cd beassert
     mvn clean install
 
-The Maven build should be successful.  This step downloads dependency packages from the [Maven Central](http://search.maven.org/), executes unit tests, and builds the `beassert-1.0.jar` that will be used by the [DataTypeDemo](https://github.com/yxuco/DataTypeDemo) project.
+The Maven build should be successful.  This step downloads dependency packages from [Maven Central](http://search.maven.org/), executes unit tests, and builds `beassert-1.0.jar` which is required to run the [DataTypeDemo](https://github.com/yxuco/DataTypeDemo) project.
 
-Before we can test and package this utility, we need to get the BE project [DataTypeDemo](https://github.com/yxuco/DataTypeDemo) running.
-
-The jar file is build in `$WORKSPACE/beassert/target/beassert-1.0.jar`, and is also installed in your local Maven repository in `~/.m2/repository/com/tibco/psg/beassert/1.0/beassert-1.0.jar`.
+The jar file is build in `$WORKSPACE/beassert/target/beassert-1.0.jar`, and it is also installed in your local Maven repository `~/.m2/repository/com/tibco/psg/beassert/1.0/beassert-1.0.jar`.
 
 ## Development using Eclipse
  
