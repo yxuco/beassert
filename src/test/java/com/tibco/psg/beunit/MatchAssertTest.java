@@ -3,6 +3,8 @@ package com.tibco.psg.beunit;
 import static com.tibco.psg.beunit.MatcherAssert.*;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -80,6 +82,22 @@ public class MatchAssertTest {
 	@Test
 	public void testHasSize() {
 		assertThat("HasSize", asList("foo", "bar"), hasSize(notNullValue(), 2));
+	}
+
+	@Test
+	public void testItemAt() {
+		assertThat("ItemAt", asList("foo", "bar"), itemAt(0, startsWithString("fo")));
+	}
+
+	@Test
+	public void testItemForMap() {
+		@SuppressWarnings("serial")
+		Map<String, Integer> map = new HashMap<String, Integer>() {{
+			put("one", 1);
+			put("two", 2);
+		}};
+
+		assertThat("ItemForKey", map, itemForKey("one", equalTo(1)));
 	}
 
 }

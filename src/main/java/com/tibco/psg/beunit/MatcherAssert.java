@@ -269,7 +269,7 @@ public class MatcherAssert {
 	
 	@com.tibco.be.model.functions.BEFunction(
 		name = "hasSize", 
-		description = "Creates a matcher for a list of testing items that matches if exactly the expected number of items are matched by the specified itemMatcher.", 
+		description = "Creates a matcher for a list of testing items that matches if the expected number of items are matched by the specified itemMatcher.", 
 		signature = "Object hasSize(Object itemMatcher, Object sizeMatcher)", 
 		params = {
 			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to every item in the testing object list. null to count all."),			
@@ -286,6 +286,38 @@ public class MatcherAssert {
 		else {
 			return com.tibco.psg.beunit.matcher.CollectionSizeMatcher.hasSize((Matcher) itemMatcher, org.hamcrest.CoreMatchers.equalTo(sizeMatcher));
 		}
+	}
+
+	@com.tibco.be.model.functions.BEFunction(
+		name = "itemAt", 
+		description = "Creates a matcher for a list of testing items that matches if the item at an index is matched by the specified itemMatcher.", 
+		signature = "Object itemAt(int index, Object itemMatcher)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "index", type = "int", desc = "the index of item that conform to the itemMatcher."),
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to the item in the testing object list.")
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;List&lt;? extends T&gt;&gt;", desc = "The matcher to check the testing list."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, asList(&quot;bar&quot;, &quot;baz&quot;), itemAt(1, startsWithString(&quot;ba&quot;)))")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Object itemAt(int index, Object itemMatcher) {
+		return com.tibco.psg.beunit.matcher.ItemAtIndexMatcher.itemAt(index, (Matcher) itemMatcher);
+	}
+
+	@com.tibco.be.model.functions.BEFunction(
+		name = "itemForKey", 
+		description = "Creates a matcher for a map of testing items that matches if exactly the item for a key is matched by the specified itemMatcher.", 
+		signature = "Object itemForKey(Object key, Object itemMatcher)", 
+		params = {
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "key", type = "Object", desc = "the key of the item that conform to the itemMatcher."),
+			@com.tibco.be.model.functions.FunctionParamDescriptor(name = "itemMatcher", type = "Matcher&lt;T&gt;", desc = "the matcher to apply to the item in the testing object list.")
+		}, 
+		freturn = @com.tibco.be.model.functions.FunctionParamDescriptor(name = "", type = "Matcher&lt;Map&lt;K,V&gt;&gt;", desc = "The matcher to check the testing map."), 
+		version = "1.0", see = "", mapper = @com.tibco.be.model.functions.BEMapper(), 
+		cautions = "none", fndomain = { ACTION }, example = "assertThat(null, aMap, itemForKey(key, startsWithString(&quot;ba&quot;)))")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Object itemForKey(Object key, Object itemMatcher) {
+		return com.tibco.psg.beunit.matcher.ItemMappedKeyMatcher.itemForKey(key, (Matcher) itemMatcher);
 	}
 
 	@com.tibco.be.model.functions.BEFunction(

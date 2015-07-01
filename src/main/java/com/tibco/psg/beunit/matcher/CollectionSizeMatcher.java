@@ -14,6 +14,7 @@ public class CollectionSizeMatcher<T> extends
 		this.itemMatcher = itemMatcher;
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	protected Integer featureValueOf(Iterable<? extends T> actual) {
 		if (null == itemMatcher && actual instanceof Collection) {
