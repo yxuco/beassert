@@ -66,8 +66,7 @@ public class InstanceOfMatcher extends DiagnosingMatcher<Object> {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static Matcher instanceOf(String expectedTypeName) {
+	public static Matcher<?> instanceOf(String expectedTypeName) {
 		return new InstanceOfMatcher(expectedTypeName);
 	}
 }

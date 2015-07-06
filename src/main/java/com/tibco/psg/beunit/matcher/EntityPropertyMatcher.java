@@ -15,7 +15,7 @@ import com.tibco.cep.runtime.model.event.SimpleEvent;
 public class EntityPropertyMatcher extends FeatureMatcher<Entity, Object> {
 	private final String propertyName;
 	
-	public EntityPropertyMatcher(String propertyName, Matcher<? super Object> propertyMatcher) {
+	public EntityPropertyMatcher(String propertyName, Matcher<Object> propertyMatcher) {
 		super(propertyMatcher, "property " + propertyName, "property " + propertyName);
 		this.propertyName = propertyName;
 	}
@@ -71,7 +71,7 @@ public class EntityPropertyMatcher extends FeatureMatcher<Entity, Object> {
 	 * @param propertyMatcher
 	 *     the matcher to apply to the specified property of the examined entity
 	 */
-    public static Matcher<?> withProperty(String propertyName, Matcher<? super Object> propertyMatcher) {
+    public static Matcher<?> withProperty(String propertyName, Matcher<Object> propertyMatcher) {
         return new EntityPropertyMatcher(propertyName, propertyMatcher);
     }
 
@@ -84,7 +84,7 @@ public class EntityPropertyMatcher extends FeatureMatcher<Entity, Object> {
 	 * @param payloadMatcher
 	 *     the matcher to apply to the payload of the examined event
 	 */
-    public static Matcher<?> withPayload(Matcher<? super Object> payloadMatcher) {
+    public static Matcher<?> withPayload(Matcher<Object> payloadMatcher) {
         return new EntityPropertyMatcher("@payload", payloadMatcher);
     }
 }
